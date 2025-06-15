@@ -1,0 +1,2 @@
+/mnt/Data/Codes/node/dart/chatapp/android/app/.cxx/RelWithDebInfo/6w452k21/x86/CMakeFiles/edit_cache.dir
+/mnt/Data/Codes/node/dart/chatapp/android/app/.cxx/RelWithDebInfo/6w452k21/x86/CMakeFiles/rebuild_cache.dir
