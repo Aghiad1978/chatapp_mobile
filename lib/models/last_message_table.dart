@@ -17,8 +17,9 @@ class LastMessageTable {
       senderUuid TEXT NOT NULL,
       senderMobile TEXT NOT NULL,
       createdAt TEXT NOT NULL,
-      type TEXT NOT NULL 
-  )
+      type TEXT NOT NULL,
+      reservedMobile TEXT NOT NULL
+  )   
       """);
   }
 
@@ -60,6 +61,7 @@ class LastMessageTable {
         "senderMobile": msg.senderMobile,
         "createdAt": msg.createdAt,
         "type": msg.type,
+        "reservedMobile": msg.senderMobile
       });
     } else {
       await _updateLastMessage(db, msg);

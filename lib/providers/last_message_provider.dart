@@ -35,6 +35,7 @@ class LastMessageProvider extends ChangeNotifier {
     await getLastMessagesFromInternalDB();
     final getIt = GetIt.instance;
     final myUuid = getIt<String>(instanceName: "uuid");
+    final myMobile = getIt<String>(instanceName: "mobile");
     Friend? friend;
     for (LastMessage lm in lMessages) {
       if (lm.senderUuid == myUuid) {
@@ -42,7 +43,7 @@ class LastMessageProvider extends ChangeNotifier {
       } else {
         friend = await FriendTable.getFriendFromUuid(lm.senderUuid);
         friend ??= Friend(
-            friendName: lm.senderMobile,
+            friendName: lm.reservedMobile,
             email: "unknown",
             mobile: lm.senderMobile,
             uuid: lm.senderUuid);

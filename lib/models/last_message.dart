@@ -6,7 +6,8 @@ class LastMessage {
       required this.receiverUuid,
       required this.senderMobile,
       required this.createdAt,
-      required this.type});
+      required this.type,
+      required this.reservedMobile});
   String senderMobile;
   String lastMessage;
   String receiverUuid;
@@ -14,6 +15,7 @@ class LastMessage {
   String senderUuid;
   String createdAt;
   String type;
+  String reservedMobile;
 
   static List<LastMessage> lastMessagesFromData(
       List<Map<String, dynamic>> data) {
@@ -26,6 +28,7 @@ class LastMessage {
           receiverUuid: lm["receiverUuid"],
           senderMobile: lm["senderMobile"],
           createdAt: lm["createdAt"],
+          reservedMobile: lm["reservedMobile"],
           type: lm["type"]));
     }
     return lastmessages;

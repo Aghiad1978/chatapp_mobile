@@ -67,7 +67,6 @@ class SocketLogic {
       connectivityProvider.setOnline(true);
       socket.emit("register-user", uuid);
       messageProvider.sendPendingMessages();
-      print("✅ Connected to socket and getting messages from server...");
       messageProvider.getMessagesFromServer();
     });
     _socket.onDisconnect((_) {
@@ -85,6 +84,9 @@ class SocketLogic {
     _socket.on("read", (msgid) async {
       await MessageTable.updateMessageIntoRead(msgid);
       messageProvider.updateMessageStatus(msgid, "read");
+    });
+    _socket.on("received-server", (msgid) async {
+      messageProvider.deletePendingMessage(msgid);
     });
     _socket.on("checkMsgStatus", (result) async {
       if (result["result"] == 3) {

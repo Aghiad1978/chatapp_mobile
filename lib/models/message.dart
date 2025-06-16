@@ -30,17 +30,18 @@ class Message {
     try {
       for (var message in messagesList) {
         Message msg = Message(
-            msgid: message["msgid"],
-            senderUuid: message["senderUuid"],
-            receiverUuid: message["receiverUuid"],
-            message: message["message"],
-            senderMobile: message["senderMobile"],
-            senderName: message["senderName"],
-            createdAt: message["createdAt"],
-            received: message["received"] == 1 ? true : false,
-            read: message["read"] == 1 ? true : false,
-            type: message["type"],
-            status: message["status"] ?? "");
+          msgid: message["msgid"],
+          senderUuid: message["senderUuid"],
+          receiverUuid: message["receiverUuid"],
+          message: message["message"],
+          senderMobile: message["senderMobile"],
+          senderName: message["senderName"],
+          createdAt: message["createdAt"],
+          received: message["received"] == 1 ? true : false,
+          read: message["read"] == 1 ? true : false,
+          type: message["type"],
+          status: message["status"] ?? "",
+        );
         messages.add(msg);
       }
     } catch (e) {

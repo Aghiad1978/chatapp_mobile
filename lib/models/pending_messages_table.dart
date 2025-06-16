@@ -70,7 +70,6 @@ CREATE TABLE IF NOT EXISTS $tableName (
     List<PendingMessage> pmList = [];
     bool existed = await DBHelper.instance.tableExists(tableName);
     if (!existed) {
-      print("No Pending Messages");
       return pmList;
     }
     final List<Map<String, dynamic>> pendingMessagesListMap = await db
@@ -84,7 +83,6 @@ CREATE TABLE IF NOT EXISTS $tableName (
     List<PendingMessage> pmList = [];
     bool existed = await DBHelper.instance.tableExists(tableName);
     if (!existed) {
-      print("No Pending Messages");
       return pmList;
     }
     final List<Map<String, dynamic>> pendingMessagesListMap =

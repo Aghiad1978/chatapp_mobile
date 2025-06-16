@@ -49,7 +49,7 @@ class FirebaseNotificationService {
       }
 
       // Handle foreground messages
-      FirebaseMessaging.onMessage.listen(_showNotification);
+      // FirebaseMessaging.onMessage.listen(_showNotification);
 
       // Handle background/terminated tap
       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {

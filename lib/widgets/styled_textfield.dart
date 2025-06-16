@@ -14,7 +14,6 @@ class StyledTextfield extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType textInput;
   final String? prefix;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -25,9 +24,16 @@ class StyledTextfield extends StatelessWidget {
         decoration: InputDecoration(
           label: Text(title),
           labelStyle: TextStyle(
-            color: const Color.fromARGB(255, 226, 226, 226),
+            color: Colors.red,
           ),
           prefixText: prefix,
+          prefixStyle: TextStyle(
+              color: Colors.red,
+              fontSize: 20), // Placeholder text for the field
+          hintStyle: TextStyle(
+            color: Colors.grey, // Hint text styling
+            fontStyle: FontStyle.italic,
+          ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.white),
             borderRadius: BorderRadius.circular(12),
@@ -39,10 +45,10 @@ class StyledTextfield extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.writtingColor),
+            borderSide: BorderSide(color: Colors.white),
           ),
         ),
-        style: TextStyle(color: AppColors.writtingColor),
+        style: TextStyle(color: Colors.white),
         keyboardType: textInput,
       ),
     );

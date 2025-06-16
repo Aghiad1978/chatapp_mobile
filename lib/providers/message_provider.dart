@@ -104,7 +104,6 @@ class MessageProvider extends ChangeNotifier {
       messages = [...fetchedMessages, ...messages];
       final pendingMessages =
           await PendingMessagesTable.getPendingMessagesForUuid(friend.uuid);
-      print(pendingMessages);
       List<Message> addedPending = [];
       for (var pm in pendingMessages) {
         addedPending.add(PendingMessage.convertPendingMessageIntoMessage(pm));
@@ -172,13 +171,16 @@ class MessageProvider extends ChangeNotifier {
     counterProvider.incrementCounter(msg.senderUuid);
     IO.Socket socket = getIt<IO.Socket>();
     if (location == "chat") {
+      counterProvider.clearCounter(msg.senderUuid);
       Friend friend = getIt<Friend>(instanceName: "currentFriend");
       if (friend.uuid == msg.senderUuid) {
         messages = [...messages, msg];
+        await MessageTable.updateMessageIntoReceived(msg.msgid);
+        socket.emit("message-received",
+            ({"msgid": msg.msgid, "senderUuid": msg.senderUuid}));
         await MessageTable.updateMessageIntoRead(msg.msgid);
         socket.emit("message-read",
             ({"msgid": msg.msgid, "senderUuid": msg.senderUuid}));
-        counterProvider.clearCounter(msg.senderUuid);
         shouldscrolltoBottom = true;
         notifyListeners();
       } else {
@@ -235,10 +237,7 @@ class MessageProvider extends ChangeNotifier {
                   socket.emit("message-read",
                       {"msgid": msg.msgid, "senderUuid": msg.senderUuid});
                   counterProvider.clearCounter(msg.senderUuid);
-                  newMessages = newMessages
-                      .where((msg) => msg.senderUuid == friend.uuid)
-                      .toList();
-                  messages = [...messages, ...newMessages];
+                  messages.add(msg);
                 }
               } catch (e) {
                 print(
@@ -291,7 +290,7 @@ class MessageProvider extends ChangeNotifier {
 
         socket.emit("message", jsonEncode(data));
         await MessageTable.insertMessage(msg);
-        await PendingMessagesTable.deletePendingMessage(msg.msgid);
+
         //remove pending message from the message list UI
         //if currently on chat with someone and the message is sent to him/her
         if (location == "chat" && msg.receiverUuid == currentFriend.uuid) {
@@ -302,6 +301,11 @@ class MessageProvider extends ChangeNotifier {
         }
       }
     }
+  }
+
+  Future<void> deletePendingMessage(String msgid) async {
+    await PendingMessagesTable.deletePendingMessage(msgid);
+    print("Pending message $msgid deleted");
   }
 
   Future<void> sendMessage(String msgText, String type) async {
