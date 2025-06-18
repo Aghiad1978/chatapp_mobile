@@ -60,6 +60,17 @@ class StyledChatscreenAppbar extends StatelessWidget
         ],
       ),
       backgroundColor: AppColors.appBarColor,
+      actions: [
+        IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.call,
+              color: Colors.green,
+            )),
+        SizedBox(
+          width: 20,
+        )
+      ],
     );
   }
 

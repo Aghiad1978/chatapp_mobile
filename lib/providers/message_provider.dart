@@ -287,12 +287,8 @@ class MessageProvider extends ChangeNotifier {
           String fileName = msg.message.split("/").last;
           data["message"] = fileName;
         }
-
         socket.emit("message", jsonEncode(data));
         await MessageTable.insertMessage(msg);
-
-        //remove pending message from the message list UI
-        //if currently on chat with someone and the message is sent to him/her
         if (location == "chat" && msg.receiverUuid == currentFriend.uuid) {
           messages.removeWhere((message) => message.msgid == msg.msgid);
           messages = [...messages, msg];
