@@ -268,7 +268,7 @@ class MessageProvider extends ChangeNotifier {
   Future<void> sendPendingMessages() async {
     final socket = getIt<IO.Socket>();
     String location = getIt<String>(instanceName: "location");
-    Friend currentFriend = getIt<Friend>(instanceName: "currentFriend");
+    //
     List<PendingMessage> pendingMessages =
         await PendingMessagesTable.getAllPendingMessages();
     if (pendingMessages.isEmpty) {
@@ -289,11 +289,14 @@ class MessageProvider extends ChangeNotifier {
         }
         socket.emit("message", jsonEncode(data));
         await MessageTable.insertMessage(msg);
-        if (location == "chat" && msg.receiverUuid == currentFriend.uuid) {
-          messages.removeWhere((message) => message.msgid == msg.msgid);
-          messages = [...messages, msg];
-          shouldscrolltoBottom = true;
-          notifyListeners();
+        if (location == "chat") {
+          Friend currentFriend = getIt<Friend>(instanceName: "currentFriend");
+          if (msg.receiverUuid == currentFriend.uuid) {
+            messages.removeWhere((message) => message.msgid == msg.msgid);
+            messages = [...messages, msg];
+            shouldscrolltoBottom = true;
+            notifyListeners();
+          }
         }
       }
     }

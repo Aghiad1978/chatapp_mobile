@@ -4,6 +4,7 @@ import 'package:chatapp/providers/connectivity_provider.dart';
 import 'package:chatapp/providers/counter_provider.dart';
 import 'package:chatapp/providers/last_message_provider.dart';
 import 'package:chatapp/providers/message_provider.dart';
+import 'package:chatapp/screens/calling_screen.dart';
 import 'package:chatapp/screens/chat_screen.dart';
 import 'package:chatapp/screens/main_screen.dart';
 import 'package:chatapp/screens/register_screen.dart';

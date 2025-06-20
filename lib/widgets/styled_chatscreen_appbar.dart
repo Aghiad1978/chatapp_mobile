@@ -1,6 +1,8 @@
 import 'package:chatapp/Theme/app_colors.dart';
 import 'package:chatapp/models/friend.dart';
 import 'package:chatapp/logic/socket_logic.dart';
+import 'package:chatapp/screens/calling_screen.dart';
+import 'package:chatapp/services/calling_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -62,7 +64,11 @@ class StyledChatscreenAppbar extends StatelessWidget
       backgroundColor: AppColors.appBarColor,
       actions: [
         IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await CallingService.getCandidate();
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CallingScreen(friend: friend)));
+            },
             icon: Icon(
               Icons.call,
               color: Colors.green,
