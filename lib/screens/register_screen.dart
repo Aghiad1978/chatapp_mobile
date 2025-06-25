@@ -37,6 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         mobileNumberController,
         countryCodeController,
       ]);
+      print("OK validated,$resultValidation");
       if (resultValidation != null) {
         setState(() {
           _isLoading = false;
@@ -49,6 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         code: countryCodeController.text,
         mobile: mobileNumberController.text,
       );
+      print(resultRegisteration);
       setState(() {
         _isLoading = false;
       });
@@ -62,7 +64,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() {
         _isLoading = false;
       });
-      return {"success": false, "message": "error unable to register the user"};
+      return {
+        "success": false,
+        "message": "error unable to register the user $e"
+      };
     }
   }
 

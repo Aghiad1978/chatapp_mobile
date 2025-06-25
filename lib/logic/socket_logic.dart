@@ -16,6 +16,19 @@ class SocketLogic {
   late String uuid;
   static late String? friendUuid;
   AudioPlayer audioPlayer = AudioPlayer();
+  // void Function(Map<String, dynamic>)? onOffer;
+  // void Function(Map<String, dynamic>)? onAnswer;
+  // void Function(Map<String, dynamic>)? onCandidate;
+
+  // void registerCallHandlers({
+  //   void Function(Map<String, dynamic>)? onOffer,
+  //   void Function(Map<String, dynamic>)? onAnswer,
+  //   void Function(Map<String, dynamic>)? onCandidate,
+  // }) {
+  //   this.onOffer = onOffer;
+  //   this.onAnswer = onAnswer;
+  //   this.onCandidate = onCandidate;
+  // }
 
   late ConnectivityProvider connectivityProvider;
   static late MessageProvider messageProvider;
@@ -81,12 +94,27 @@ class SocketLogic {
       await MessageTable.updateMessageIntoReceived(msgid);
       messageProvider.updateMessageStatus(msgid, "received");
     });
+    // _socket.on("offer", (data) {
+    //   onOffer?.call(Map<String, dynamic>.from(data));
+    //   print("Got an offer");
+    // });
+    // _socket.on("answer", (data) {
+    //   onAnswer?.call(Map<String, dynamic>.from(data));
+    //   print("GEtting answer");
+    // });
+    // _socket.on("candidate", (data) {
+    //   onCandidate?.call(Map<String, dynamic>.from(data));
+    //   print("getting canididate emit");
+    // });
     _socket.on("read", (msgid) async {
       await MessageTable.updateMessageIntoRead(msgid);
       messageProvider.updateMessageStatus(msgid, "read");
     });
     _socket.on("received-server", (msgid) async {
       messageProvider.deletePendingMessage(msgid);
+    });
+    socket.on("status", (data) {
+      _friendStatusController.add(data);
     });
     _socket.on("checkMsgStatus", (result) async {
       if (result["result"] == 3) {
@@ -102,9 +130,6 @@ class SocketLogic {
         await MessageTable.updateMessageIntoRead(result["msgid"]);
         messageProvider.updateMessageStatus(result["msgid"], "read");
       }
-    });
-    _socket.on("status", (data) {
-      _friendStatusController.add(data);
     });
   }
   bool getOnlineStatus() {
