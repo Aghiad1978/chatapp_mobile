@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:chatapp/config.dart';
+import 'package:chatapp/main.dart';
+import 'package:chatapp/models/friend.dart';
+import 'package:chatapp/models/friend_table.dart';
 import 'package:chatapp/models/message_table.dart';
 import 'package:chatapp/models/message.dart';
 import 'package:chatapp/providers/connectivity_provider.dart';
 import 'package:chatapp/providers/counter_provider.dart';
 import 'package:chatapp/providers/last_message_provider.dart';
 import 'package:chatapp/providers/message_provider.dart';
+import 'package:chatapp/screens/calling_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -16,19 +21,6 @@ class SocketLogic {
   late String uuid;
   static late String? friendUuid;
   AudioPlayer audioPlayer = AudioPlayer();
-  // void Function(Map<String, dynamic>)? onOffer;
-  // void Function(Map<String, dynamic>)? onAnswer;
-  // void Function(Map<String, dynamic>)? onCandidate;
-
-  // void registerCallHandlers({
-  //   void Function(Map<String, dynamic>)? onOffer,
-  //   void Function(Map<String, dynamic>)? onAnswer,
-  //   void Function(Map<String, dynamic>)? onCandidate,
-  // }) {
-  //   this.onOffer = onOffer;
-  //   this.onAnswer = onAnswer;
-  //   this.onCandidate = onCandidate;
-  // }
 
   late ConnectivityProvider connectivityProvider;
   static late MessageProvider messageProvider;
@@ -82,6 +74,29 @@ class SocketLogic {
       messageProvider.sendPendingMessages();
       messageProvider.getMessagesFromServer();
     });
+    _socket.on("call-request", (data) async {
+      print("GOT the call request");
+      _socket.emit("call-request-received", data);
+      Friend? friend = await FriendTable.getFriendFromUuid(data["from"]);
+      if (friend != null) {
+        navigatorKey.currentState?.push(MaterialPageRoute(
+            builder: (context) => CallingScreen(
+                  friend: friend,
+                  uuid: uuid,
+                )));
+      } else {
+        Friend friend = Friend(
+            friendName: "unKnown",
+            email: "unknown",
+            mobile: "",
+            uuid: data["from"]);
+        navigatorKey.currentState?.push(MaterialPageRoute(
+            builder: (context) => CallingScreen(
+                  friend: friend,
+                  uuid: uuid,
+                )));
+      }
+    });
     _socket.onDisconnect((_) {
       connectivityProvider.setOnline(false);
     });
@@ -94,18 +109,7 @@ class SocketLogic {
       await MessageTable.updateMessageIntoReceived(msgid);
       messageProvider.updateMessageStatus(msgid, "received");
     });
-    // _socket.on("offer", (data) {
-    //   onOffer?.call(Map<String, dynamic>.from(data));
-    //   print("Got an offer");
-    // });
-    // _socket.on("answer", (data) {
-    //   onAnswer?.call(Map<String, dynamic>.from(data));
-    //   print("GEtting answer");
-    // });
-    // _socket.on("candidate", (data) {
-    //   onCandidate?.call(Map<String, dynamic>.from(data));
-    //   print("getting canididate emit");
-    // });
+
     _socket.on("read", (msgid) async {
       await MessageTable.updateMessageIntoRead(msgid);
       messageProvider.updateMessageStatus(msgid, "read");

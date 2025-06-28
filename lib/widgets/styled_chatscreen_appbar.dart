@@ -65,8 +65,12 @@ class StyledChatscreenAppbar extends StatelessWidget
       actions: [
         IconButton(
             onPressed: () async {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => CallingScreen()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => CallingScreen(
+                        friend: friend,
+                        uuid: uuid,
+                        isCaller: true,
+                      )));
             },
             icon: Icon(
               Icons.call,

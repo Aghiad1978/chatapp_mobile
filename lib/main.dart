@@ -11,6 +11,7 @@ import 'package:chatapp/screens/search_screen.dart';
 import 'package:chatapp/screens/start_screen.dart';
 import 'package:chatapp/services/firebase_notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
@@ -21,12 +22,26 @@ Future<void> prepare() async {
   getIt.registerSingleton<List<CameraDescription>>(await availableCameras());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Handling a background message: ${message.messageId}");
+
+  // You can handle background messages here if needed
+  String? notificationType = message.data['type'];
+  if (notificationType == 'call') {
+    print('Background call notification received');
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FirebaseNotificationService().initialize();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await flutterLocalNotificationsPlugin.cancelAll();
 
   await prepare();
@@ -51,6 +66,7 @@ class CryptoMain extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      navigatorKey: navigatorKey,
       initialRoute: "/",
       onGenerateRoute: (settings) {
         if (settings.name == "/chat") {
